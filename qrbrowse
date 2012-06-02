@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use open qw<:encoding(UTF-8) :std>;
 use FindBin;
-use lib "$FindBin::Bin/lib";
+use lib "$FindBin::RealBin/lib";
 use Regexp::Common qw(URI);
 use File::Temp qw(tempdir);
 use File::Spec::Functions qw(catfile);
