@@ -66,16 +66,14 @@ my $textf = catfile($tempdir, "index.html");
 open (my $textfh, ">", $textf)
     or die "Unable to open index file: $!\n";
 
-print $textfh "<pre>";
 while (<>) {
     s/$pattern/
         exists($toescape{$&}) ?
         $toescape{$&} :
         qrfile($&)
     /oge;
-    print $textfh $_;
+    print $textfh $_."<br>";
 }
-print $textfh "</pre>";
 close $textfh
     or die "Unable to close index file: $!";
 
