@@ -10,7 +10,7 @@ use File::Spec::Functions qw(catfile);
 
 my @patterns = (
     $RE{URI}{HTTP}, # from Regexp::Common
-    qr/\d+/,
+    qr/\d{4,}/,
 );
 
 my %toescape = qw(
