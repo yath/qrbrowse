@@ -4,6 +4,8 @@ use utf8;
 use strict;
 use warnings;
 use open qw<:encoding(UTF-8) :std>;
+use FindBin;
+use lib "$FindBin::Bin/lib";
 use Regexp::Common qw(URI);
 use File::Temp qw(tempdir);
 use File::Spec::Functions qw(catfile);
@@ -19,8 +21,9 @@ my %toescape = qw(
     & &amp;
 );
 
-my @qrencode = qw(qrencode -t ASCII -m 2);
 my @viewer = qw(w3m);
+
+my $qrenc;
 
 sub orpatterns {
     return $_[0] if @_ == 1;
@@ -38,14 +41,9 @@ sub qrenc {
     my $outfn = sprintf("qr_%d.txt", $qrfile++);
     open(my $outfh, ">", catfile($tempdir, $outfn))
         or die "Unable to open $outfn: $!\n";
-    open(my $qrfh, "-|", @qrencode, "--", $text)
-        or die "Unable to run qrencode: $!\n";
-    while (<$qrfh>) {
-        y/ #/█ /;
-        print $outfh $_;
-    }
-    close $qrfh
-        or die "Unable to close qrencode: $!\n";
+    my $qr = $qrenc->encode($text);
+    $qr =~ y/ */█ /;
+    print $outfh $qr;
     close $outfh
         or die "Unable to close $outfn: $!\n";
     return $outfn;
@@ -65,6 +63,17 @@ sub qrfile {
 my $textf = catfile($tempdir, "index.html");
 open (my $textfh, ">", $textf)
     or die "Unable to open index file: $!\n";
+
+for my $enc (qw(QREncode)) {
+    eval {
+        my $encfull = "QRBrowse::Encoders::$enc";
+        eval "require $encfull" or die $@;
+        no strict "refs";
+        $qrenc = $encfull->new();
+    };
+    undef $qrenc and next if $@;
+}
+die "No suitable QR encoder found!\n" unless $qrenc;
 
 while (<>) {
     s/$pattern/
