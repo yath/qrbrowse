@@ -1,0 +1,22 @@
+qrbrowse opens a text file (either read via stdin or filename
+passed via command-line) in a text browser, replacing certain
+patterns (like URLs or numbers) to links to QR codes.
+
+I use this in mutt with this muttrc entry:
+
+macro pager <F2> '<enter-command>set pipe_decode=yes<enter>\
+<enter-command>set wait_key=no<enter>\
+<pipe-message>qrbrowse<enter>\
+<enter-command>set wait_key=yes<enter>\
+<enter-command>set pipe_decode=no<enter>' \
+"View message with QR codes"
+
+This way, when I receive an e-mail with a tracking number or
+URL which I want to read on my phone I just hit F2 in the pager,
+select the text to be shown as QR code and scan it with my phone.
+
+This is just a simple hack that I put into the public domain
+without any warranty or whatever, just thought it might be
+useful to others.
+
+Sebastian Schmidt
