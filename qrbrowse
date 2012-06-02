@@ -65,13 +65,14 @@ open (my $textfh, ">", $textf)
     or die "Unable to open index file: $!\n";
 
 for my $enc (qw(QREncode)) {
+    undef $qrenc;
     eval {
         my $encfull = "QRBrowse::Encoders::$enc";
         eval "require $encfull" or die $@;
         no strict "refs";
         $qrenc = $encfull->new();
     };
-    undef $qrenc and next if $@;
+    last unless $@;
 }
 die "No suitable QR encoder found!\n" unless $qrenc;
 
