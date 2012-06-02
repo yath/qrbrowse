@@ -76,8 +76,6 @@ for my $enc (qw(TextQRCode QREncode)) {
 }
 die "No suitable QR encoder found!\n" unless $qrenc;
 
-print "Using $qrenc\n";
-
 while (<>) {
     s/$pattern/
         exists($toescape{$&}) ?
