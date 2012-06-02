@@ -64,7 +64,7 @@ my $textf = catfile($tempdir, "index.html");
 open (my $textfh, ">", $textf)
     or die "Unable to open index file: $!\n";
 
-for my $enc (qw(QREncode)) {
+for my $enc (qw(TextQRCode QREncode)) {
     undef $qrenc;
     eval {
         my $encfull = "QRBrowse::Encoders::$enc";
@@ -75,6 +75,8 @@ for my $enc (qw(QREncode)) {
     last unless $@;
 }
 die "No suitable QR encoder found!\n" unless $qrenc;
+
+print "Using $qrenc\n";
 
 while (<>) {
     s/$pattern/
