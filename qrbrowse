@@ -6,6 +6,7 @@ use warnings;
 use open qw<:encoding(UTF-8) :std>;
 use FindBin;
 use lib "$FindBin::RealBin/lib";
+use QRBrowse::Encoder qw(get_encoder);
 use Regexp::Common qw(URI);
 use File::Temp qw(tempdir);
 use File::Spec::Functions qw(catfile);
@@ -23,7 +24,7 @@ my %toescape = qw(
 
 my @viewer = qw(w3m);
 
-my $qrenc;
+my $qrenc = get_encoder();
 
 sub orpatterns {
     return $_[0] if @_ == 1;
@@ -63,18 +64,6 @@ sub qrfile {
 my $textf = catfile($tempdir, "index.html");
 open (my $textfh, ">", $textf)
     or die "Unable to open index file: $!\n";
-
-for my $enc (qw(TextQRCode QREncode)) {
-    undef $qrenc;
-    eval {
-        my $encfull = "QRBrowse::Encoders::$enc";
-        eval "require $encfull" or die $@;
-        no strict "refs";
-        $qrenc = $encfull->new();
-    };
-    last unless $@;
-}
-die "No suitable QR encoder found!\n" unless $qrenc;
 
 while (<>) {
     s/$pattern/
