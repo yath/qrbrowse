@@ -1,0 +1,82 @@
+#!/usr/bin/perl
+use 5.12.0;
+use utf8;
+use strict;
+use warnings;
+use open qw<:encoding(UTF-8) :std>;
+use Regexp::Common qw(URI);
+use File::Temp qw(tempdir);
+use File::Spec::Functions qw(catfile);
+
+my @patterns = (
+    $RE{URI}{HTTP}, # from Regexp::Common
+    qr/\d+/,
+);
+
+my %toescape = qw(
+    < &lt;
+    > &gt;
+    & &amp;
+);
+
+my @qrencode = qw(qrencode -t ASCII -m 2);
+my @viewer = qw(w3m);
+
+sub orpatterns {
+    return $_[0] if @_ == 1;
+    return "(?:".join(")|(?:", @_).")";
+}
+
+my $toescape = orpatterns(map { quotemeta } keys %toescape);
+my $pattern = orpatterns(@patterns, $toescape);
+my %qrfiles;
+my $qrfile = 0;
+my $tempdir = tempdir(CLEANUP => 1);
+
+sub qrenc {
+    my ($text) = @_;
+    my $outfn = sprintf("qr_%d.txt", $qrfile++);
+    open(my $outfh, ">", catfile($tempdir, $outfn))
+        or die "Unable to open $outfn: $!\n";
+    open(my $qrfh, "-|", @qrencode, "--", $text)
+        or die "Unable to run qrencode: $!\n";
+    while (<$qrfh>) {
+        y/ #/█ /;
+        print $outfh $_;
+    }
+    close $qrfh
+        or die "Unable to close qrencode: $!\n";
+    close $outfh
+        or die "Unable to close $outfn: $!\n";
+    return $outfn;
+}
+
+sub qrfile {
+    my ($text) = @_;
+    if (!defined($qrfiles{$text})) {
+        $qrfiles{$text} = qrenc($text);
+    }
+    my $fn = $qrfiles{$text};
+    my $qtext = $text;
+    $qtext =~ s/$toescape/$toescape{$&}/og;
+    return qq(<a href="$fn">$qtext</a>);
+}
+
+my $textf = catfile($tempdir, "index.html");
+open (my $textfh, ">", $textf)
+    or die "Unable to open index file: $!\n";
+
+print $textfh "<pre>";
+while (<>) {
+    s/$pattern/
+        exists($toescape{$&}) ?
+        $toescape{$&} :
+        qrfile($&)
+    /oge;
+    print $textfh $_;
+}
+print $textfh "</pre>";
+close $textfh
+    or die "Unable to close index file: $!";
+
+system(@viewer, $textf);
