@@ -1,6 +1,7 @@
 package QRBrowse::Encoders::QREncode;
 use strict;
 use warnings;
+use Carp;
 
 my @qrencode = qw(qrencode -t ASCII -m 2);
 
@@ -19,13 +20,13 @@ sub encode {
     my $ret = "";
 
     open(my $qrfh, "-|", @qrencode, "--", $text)
-        or die "Unable to run qrencode: $!\n";
+        or croak "Unable to run qrencode: $!\n";
     while (<$qrfh>) {
         y/#/*/;
         $ret .= $_;
     }
     close $qrfh
-        or die "Unable to close qrencode: $!\n";
+        or croak "Unable to close qrencode: $!\n";
 
     return $ret;
 }
