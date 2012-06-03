@@ -1,0 +1,17 @@
+Source: qrbrowse
+Section: web
+Priority: extra
+Maintainer: Alexander Wirt <formorer@debian.org>
+Build-Depends: debhelper (>= 8.0.0), libregexp-common-perl
+Standards-Version: 3.9.3
+Homepage: https://github.com/yath/qrbrowse/
+Vcs-Git: https://github.com/formorer/qrbrowse.git
+Vcs-Browser: https://github.com/formorer/qrbrowse/
+
+Package: qrbrowse
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libregexp-common-perl, libtext-qrcode-perl | qrencode, w3m
+Description: display qrcodes with mutt
+ qrbrowse opens a text file (either read via stdin or filename passed via
+ command-line) in a text browser, replacing certain patterns (like URLs or
+ numbers) to links to QR codes.
