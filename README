@@ -15,7 +15,7 @@ This way, when I receive an e-mail with a tracking number or
 URL which I want to read on my phone I just hit F2 in the pager,
 select the text to be shown as QR code and scan it with my phone.
 
-This is just a simple hack that I put into the public domain
+This is just a simple hack that I release under the MIT license
 without any warranty or whatever, just thought it might be
 useful to others.
 
