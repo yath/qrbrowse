@@ -1,0 +1,8 @@
+bin/qrbrowse
+Build.PL
+lib/QRBrowse/Encoder.pm
+lib/QRBrowse/Encoders/QREncode.pm
+lib/QRBrowse/Encoders/TextQRCode.pm
+LICENSE
+MANIFEST			This list of files
+README

@@ -11,6 +11,8 @@ use Regexp::Common qw(URI);
 use File::Temp qw(tempdir);
 use File::Spec::Functions qw(catfile);
 
+my $VERSION = '0.0';
+
 my @patterns = (
     $RE{URI}{HTTP}{-scheme => qr/https?/}, # from Regexp::Common
     qr/\d{4,}/,
