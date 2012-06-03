@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use open qw<:encoding(UTF-8) :std>;
 use FindBin;
-use lib "$FindBin::RealBin/lib";
+use lib "$FindBin::RealBin/../lib";
 use QRBrowse::Encoder qw(get_encoder);
 use Regexp::Common qw(URI);
 use File::Temp qw(tempdir);
